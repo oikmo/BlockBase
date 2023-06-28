@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="libraries/jar/commons-io-2.11.0.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/VoxelTest/libraries/jar/commons-io-2.11.0-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libraries/jar/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="libraries/jar/lwjgl.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/VoxelTest/libraries/jar/lwjgl-2.9.3-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="VoxelTest/libraries/native/windows"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libraries/jar/PNGDecoder.jar"/>
+	<classpathentry kind="lib" path="libraries/jar/slick-util.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
