@@ -1,15 +1,15 @@
 package org.VoxelTest.main;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import org.VoxelTest.entities.Camera;
-import org.VoxelTest.entities.Entity;
+import org.VoxelTest.entities.*;
 import org.VoxelTest.renderengine.*;
+import org.VoxelTest.renderengine.chunk.*;
+import org.VoxelTest.renderengine.cube.Block;
 import org.VoxelTest.renderengine.models.*;
 import org.VoxelTest.renderengine.renderers.MasterRenderer;
 import org.VoxelTest.renderengine.textures.ModelTexture;
+import org.VoxelTest.toolbox.PerlinNoiseGenerator;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
@@ -20,8 +20,10 @@ public class VoxelTest {
 	public static MasterRenderer renderer = null;
 	
 	static Vector3f camPos = new Vector3f(0,0,0);
-	static List<Chunk> chunks = Collections.synchronizedList(new ArrayList<Chunk>());
+	static List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<ChunkMesh>());
 	static List<Vector3f> usedPos = new ArrayList<>();
+	
+	static List<Entity> entities = new ArrayList<>();
 	
 	public static int CHUNK_SIZE = 5;
 	
@@ -32,35 +34,38 @@ public class VoxelTest {
 	public static void main(String[] args) throws LWJGLException {
 		DisplayManager.createDisplay();
 		
-		MasterRenderer render1 = new MasterRenderer();
-		renderer = render1;
+		renderer = new MasterRenderer();
 		
-		
-		RawModel model = loader.loadToVAO(AtlasCubeModel.vertices, AtlasCubeModel.indices, AtlasCubeModel.uv);
-		ModelTexture texture = new ModelTexture(loader.loadSquareTexture("grassTex"));
-		TexturedModel texModel = new TexturedModel(model, texture);
 		Camera camera = new Camera(new Vector3f(0,0,0), new Vector3f(0,0,0), 1);
+		
+		ModelTexture texture = new ModelTexture(loader.loadSquareTexture("grassTex"));
+		
+		PerlinNoiseGenerator generator = new PerlinNoiseGenerator();
 		
 		//chunk render top half
 		new Thread(new Runnable() { 
 			public void run() {
 				while(!closeDisplay) {
-					for (int x = (int) (camPos.x - WORLD_SIZE) / 16; x < (camPos.x + WORLD_SIZE) / 16; x++) {
-						for (int z = (int) (camPos.z - WORLD_SIZE) / 16; z < (camPos.z + WORLD_SIZE) / 16; z++) {
-							int chunkX = x * 16;
-							int chunkZ = z * 16;
+					for (int x = (int) (camPos.x - WORLD_SIZE) / 32; x < (camPos.x + WORLD_SIZE) / 32; x++) {
+						for (int z = (int) (camPos.z - WORLD_SIZE) / 32; z < (camPos.z + WORLD_SIZE) / 32; z++) {
+							int chunkX = x * 32;
+							int chunkZ = z * 32;
 							
 							if(!usedPos.contains(new Vector3f(chunkX, 0, chunkZ))) {
-								List<Entity> blocks = new ArrayList<>();
+								List<Block> blocks = new ArrayList<>();
 								
-								for (int i = 0; i < 16; i++) {
-									for (int j = 0; j < 16; j++) {
+								for (int i = 0; i < 32; i++) {
+									for (int j = 0; j < 32; j++) {
 										
-										blocks.add(new Entity(texModel, new Vector3f(i + chunkX , 0, j + chunkZ), new Vector3f(0,0,0), 1));
+										blocks.add(new Block(i, (int) generator.generateHeight(i + chunkX, j + chunkZ), j, Block.Type.GRASS));
 										
 									}
 								}
-								chunks.add(new Chunk(blocks, new Vector3f(chunkX, 0, chunkX)));
+								
+								Chunk chunk = new Chunk(blocks, new Vector3f(chunkX, 0, chunkZ));
+								ChunkMesh mesh = new ChunkMesh(chunk);
+								
+								chunks.add(mesh);
 								usedPos.add(new Vector3f(chunkX, 0, chunkZ));
 							}
 						}
@@ -68,27 +73,60 @@ public class VoxelTest {
 				}
 			}
 		}).start();
-
 		
+		//RawModel model = loader.loadToVAO(AtlasCubeModel.vertices, AtlasCubeModel.indices, AtlasCubeModel.uv);
+		
+		
+		/*List<Block> blocks = new ArrayList<Block>();
+		
+		for(int x = 0; x < 10; x++) {
+			for(int y = 0; y < 10; y++) {
+				for(int z = 0; z < 10; z++) {
+					blocks.add(new Block(x, y, z, Block.Type.DIRT));
+				}
+			}
+		}
+		
+		Chunk chunk = new Chunk(blocks, new Vector3f(0,0,0));
+		ChunkMesh mesh = new ChunkMesh(chunk);*/
+		
+		//MAINGAMELOOP
+		int index = 0;
 		while(!Display.isCloseRequested()) {
 			
-			update(camera);
+			camera.move();
 			camPos = camera.getPosition();
 			
-			for(int i = 0; i < chunks.size(); i++) {
-				Vector3f origin = chunks.get(i).getOrigin();
+			if(index < chunks.size()) {
+				RawModel model123 = loader.loadToVAO(chunks.get(index).positions, chunks.get(index).uvs);
+				TexturedModel texModel123 = new TexturedModel(model123, texture);
+				Entity entity = new Entity(texModel123, chunks.get(index).chunk.origin);
+				entities.add(entity);
+				
+				chunks.get(index).positions = null;
+				chunks.get(index).uvs = null;
+				chunks.get(index).normals = null;
+				
+				index++;
+			}
+			
+			for(int i = 0; i < entities.size(); i++) {
+				Vector3f origin = entities.get(i).getPosition();
 				
 				int distX = (int) (camPos.x - origin.x);
 				int distZ = (int) (camPos.z - origin.z);
 				
-				distX = Math.abs(distX);
+				if(distX < 0) {
+					distX = -distX;
+				}
 				
-				distZ = Math.abs(distZ);
+				if(distZ < 0) {
+					distZ = -distZ;
+				}
+				
 				
 				if((distX <= WORLD_SIZE) && (distZ <= WORLD_SIZE)) {
-					for(int j = 0; j < chunks.get(i).getBlocks().size(); j++) {
-						renderer.addEntity(chunks.get(i).getBlocks().get(j));
-					}
+					renderer.addEntity(entities.get(i));
 				}
 			}
 			
@@ -99,12 +137,6 @@ public class VoxelTest {
 		
 		closeDisplay = true;
 		DisplayManager.closeDisplay();
-	}
-	
-	public static void update(Camera camera) {
-		camera.move();
-		
-		
 	}
 }
  

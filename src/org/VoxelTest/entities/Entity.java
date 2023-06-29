@@ -17,6 +17,14 @@ public class Entity {
 		this.scale = scale;
 	}
 	
+	public Entity(TexturedModel model, Vector3f position) {
+		super();
+		this.model = model;
+		this.position = position;
+		this.rotation = new Vector3f(0,0,0);
+		this.scale = 1;
+	}
+	
 	public void increasePosition(float dx, float dy, float dz) {
 		this.position.x += dx;
 		this.position.y += dy;

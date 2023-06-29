@@ -31,7 +31,7 @@ public class Loader {
 	
 	/**
 	 * 
-	 * @param vertices
+	 * @param vertices, indices, uv
 	 * @return the RawModel
 	 */
 	public RawModel loadToVAO(float[] vertices, int[] indices, float[] uv) {
@@ -40,7 +40,24 @@ public class Loader {
 		storeDataInAttributeList(vertices, 0, 3);
 		storeDataInAttributeList(uv, 1, 2);
 		bindIndicesBuffer(indices);
-		return new RawModel(vaoID, vertices.length);
+		GL30.glBindVertexArray(0);
+		
+		return new RawModel(vaoID, indices.length);
+	}
+	
+	/**
+	 * 
+	 * @param vertices, uv
+	 * @return the RawModel but no vertices.
+	 */
+	public RawModel loadToVAO(float[] vertices, float[] uv) {
+		
+		int vaoID = createVAO();
+		storeDataInAttributeList(vertices, 0, 3);
+		storeDataInAttributeList(uv, 1, 2);
+		GL30.glBindVertexArray(0);
+		
+		return new RawModel(vaoID, vertices.length / 3);
 	}
 	
 	/**
@@ -52,6 +69,7 @@ public class Loader {
 		int vaoID = GL30.glGenVertexArrays();
 		vaos.add(vaoID);
 		GL30.glBindVertexArray(vaoID);
+		
 		return vaoID;
 	}
 	
