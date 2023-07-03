@@ -1,14 +1,10 @@
-package org.VoxelTest.renderengine.cube;
-
-import org.VoxelTest.renderengine.Loader;
+package org.VoxelTest.renderengine.world.cube;
 
 public class Block {
 	public int x, y, z;
-	
-	public static Loader loader = new Loader();
-	
+
 	public static enum Type {
-		DIRT, GRASS;
+		GRASS, DIRT, STONE;
 	};
 	
 	public Type type;
@@ -19,5 +15,9 @@ public class Block {
 		this.z = z;
 		
 		this.type = type;
+	}
+
+	public int getType() {
+		return type.ordinal();
 	}
 }

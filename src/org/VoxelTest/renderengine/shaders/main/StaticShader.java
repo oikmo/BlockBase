@@ -4,6 +4,7 @@ import org.VoxelTest.entities.Camera;
 import org.VoxelTest.renderengine.shaders.ShaderProgram;
 import org.VoxelTest.toolbox.Maths;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class StaticShader extends ShaderProgram {
 	
@@ -13,6 +14,7 @@ public class StaticShader extends ShaderProgram {
 	int location_transformationMatrix;
 	int location_projectionMatrix;
 	int location_viewMatrix;
+	int location_skyColor;
 	
 	public StaticShader() {
 		super(vertexFile, fragmentFile);
@@ -29,6 +31,11 @@ public class StaticShader extends ShaderProgram {
 		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
 		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 		location_viewMatrix = super.getUniformLocation("viewMatrix");
+		location_skyColor = super.getUniformLocation("skyColor");
+	}
+	
+	public void loadSkyColor(float r, float g, float b) {
+		super.load3DVector(location_skyColor, new Vector3f(r,g,b));
 	}
 	
 	public void loadTransformationMatrix(Matrix4f matrix) {

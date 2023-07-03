@@ -1,7 +1,6 @@
 package org.VoxelTest.renderengine.renderers;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.VoxelTest.entities.Entity;
 import org.VoxelTest.renderengine.models.TexturedModel;
@@ -14,7 +13,7 @@ public class EntityRenderer {
 	
 	static StaticShader shader = new StaticShader();
 	
-	public static void render(Map<TexturedModel, List<Entity>> entities) {
+	public static void render(Map<TexturedModel, HashSet<Entity>> entities) {
 		for(TexturedModel model : entities.keySet()) {
 			GL30.glBindVertexArray(model.getModel().getVaoID());
 			GL20.glEnableVertexAttribArray(0);
@@ -23,7 +22,7 @@ public class EntityRenderer {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getTextureID());
 			
-			List<Entity> batch = entities.get(model);
+			HashSet<Entity> batch = entities.get(model);
 			
 			for(Entity entity : batch) {
 				

@@ -1,4 +1,4 @@
-package org.VoxelTest.renderengine.cube;
+package org.VoxelTest.renderengine.world.cube;
 
 import org.lwjgl.util.vector.*;
 

@@ -1,5 +1,6 @@
 package org.VoxelTest.entities;
 
+import org.VoxelTest.toolbox.datastructures.ViewFrustum;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
@@ -10,14 +11,24 @@ public class Camera {
 	float turnSpeed = 0.1f;
 	float moveAt;
 	
+	final float BASE_SPEED = 0.1f;
+	final float SPRINT_SPEED = 0.2f;
+	
 	Vector3f position;
 	Vector3f rotation;
 	float scale;
+	
+	ViewFrustum viewFrustum;
 	
 	public Camera(Vector3f position, Vector3f rotation, float scale) {
 		this.position = position;
 		this.rotation = rotation;
 		this.scale = scale;
+		viewFrustum = new ViewFrustum();
+	}
+	
+	public ViewFrustum getFrustum() {
+		return viewFrustum;
 	}
 	
 	public void increasePosition(float dx, float dy, float dz) {
@@ -73,9 +84,18 @@ public class Camera {
 	}
 	
 	public void move() {
+		viewFrustum.updateFrustum();
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			speed = SPRINT_SPEED;
+		} else {
+			speed = BASE_SPEED;
+		}
+		
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
+			//System.out.println(getPosition().y);
 			moveAt = -speed;
 		} else if(Keyboard.isKeyDown(Keyboard.KEY_S)) {
+			//System.out.println(getPosition().y);
 			moveAt = speed;
 		} else {
 			moveAt = 0;

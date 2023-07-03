@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class PerlinNoiseGenerator {
 
-  	public static float AMPLITUDE = 80f;
-    public static int OCTAVES = 7;
+  	public static float AMPLITUDE = 50f;
+    public static int OCTAVES = 8;
     public static float ROUGHNESS = 0.3f;
  
     private Random random = new Random();
@@ -15,6 +15,18 @@ public class PerlinNoiseGenerator {
  
     public PerlinNoiseGenerator() {
         this.seed = 0;
+    }
+    
+    public PerlinNoiseGenerator(String seed) {
+    	char[] string = seed.toCharArray();
+    	
+    	int tempSeed = 0;
+    	
+    	for(int i = 0; i < seed.length(); i++) {
+    		tempSeed += (int) string[i] * 2;
+    	}
+    	this.seed = tempSeed;
+    	System.out.println(tempSeed);
     }
      
     //only works with POSITIVE gridX and gridZ values!
@@ -37,7 +49,7 @@ public class PerlinNoiseGenerator {
             total += getInterpolatedNoise((x+xOffset)*freq, (z + zOffset)*freq) * amp;
         }
         
-        return (float) (int) total;
+        return (float) (int) total + 60;
         
     }
      

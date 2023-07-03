@@ -1,22 +1,30 @@
 package org.VoxelTest.renderengine.renderers;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
-import org.VoxelTest.entities.*;
+import org.VoxelTest.entities.Camera;
+import org.VoxelTest.entities.Entity;
+import org.VoxelTest.main.VoxelTest;	
 import org.VoxelTest.renderengine.models.TexturedModel;
 import org.VoxelTest.renderengine.shaders.main.StaticShader;
-import org.lwjgl.opengl.*;
+import org.VoxelTest.toolbox.Maths;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class MasterRenderer {
 	
 	Matrix4f projectionMatrix;
 	
-	private static final float FOV = 70f;
-	private static final float NEAR_PLANE = 0.1f;
-	private static final float FAR_PLANE = 10000f;
+	private static final float FOV = 90f;
+	private static final float NEAR_PLANE = 0.01f;
+	private static final float FAR_PLANE = 1000f;
 	
-	Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
+	Map<TexturedModel, HashSet<Entity>> entities = new HashMap<TexturedModel, HashSet<Entity>>();
 	//EntityRenderer renderer = new EntityRenderer();
 	static StaticShader shader = new StaticShader();
 	
@@ -27,37 +35,51 @@ public class MasterRenderer {
 		shader.stop();
 	}
 	
-	
-	
 	public void prepare() {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClearColor(0.4f, 0.7f, 1.0f, 1);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	}
 	
+	Matrix4f viewMatrix;
+	
 	public void render(Camera camera) {
 		prepare();
 		
-		shader.start();
-		shader.loadViewMatrix(camera);
-		EntityRenderer.render(entities);
-		shader.stop();
+	    shader.start();
+	    shader.loadViewMatrix(camera);
+	    shader.loadProjectionMatrix(projectionMatrix);
+	    shader.loadSkyColor(0.4f, 0.7f, 1.0f);
+	    
+	    EntityRenderer.render(entities);
+		
+	    
+	    shader.stop();
 		
 		entities.clear();
 	}
-	
 	public void addEntity(Entity entity) {
 		TexturedModel model = entity.getModel();
 		
-		List<Entity> batch = entities.get(model);
+		HashSet<Entity> batch = entities.get(model);
 		
 		if(batch != null) {
 			batch.add(entity);
 		} else {
-			List<Entity> newBatch = new ArrayList<>();
+			HashSet<Entity> newBatch = new HashSet<>();
 			newBatch.add(entity);
 			entities.put(model, newBatch);
 		}
+	}
+	
+	public void removeEntity(Entity entity) {
+		TexturedModel model = entity.getModel();
+		
+		entities.remove(model, VoxelTest.entities);
+	}
+	
+	public Matrix4f getProjectionMatrix() {
+		return projectionMatrix;
 	}
 	
 	public void createProjectionMatrix() {
