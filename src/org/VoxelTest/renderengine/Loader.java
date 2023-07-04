@@ -29,6 +29,15 @@ public class Loader {
 	static List<Integer> vbos = new ArrayList<>();
 	static List<Integer> textures = new ArrayList<>();
 	
+	public static Loader loader;
+	
+	public static Loader getLoader() {
+		if(loader == null) {
+			loader = new Loader();
+		}
+		return loader;
+	}
+	
 	/**
 	 * 
 	 * @param vertices, indices, uv

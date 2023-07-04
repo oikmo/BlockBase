@@ -15,7 +15,6 @@ public class CubeModel {
 			new Vector3f(0.5f,0.5f,-0.5f)
 			
 	};
-	
 	public static Vector3f[] NX_POS = {
 			
 			new Vector3f(-0.5f,0.5f,-0.5f),
@@ -25,8 +24,7 @@ public class CubeModel {
 			new Vector3f(-0.5f,0.5f,0.5f),
 			new Vector3f(-0.5f,0.5f,-0.5f)
 			
-	};
-	
+	};	
 	public static Vector3f[] PY_POS = {
 			
 			new Vector3f(-0.5f,0.5f,0.5f),
@@ -37,7 +35,6 @@ public class CubeModel {
 			new Vector3f(-0.5f,0.5f,0.5f)
 			
 	};
-	
 	public static Vector3f[] NY_POS = {
 			
 			new Vector3f(-0.5f,-0.5f,0.5f),
@@ -48,7 +45,6 @@ public class CubeModel {
 			new Vector3f(-0.5f,-0.5f,0.5f)
 			
 	};
-	
 	public static Vector3f[] PZ_POS = {
 			
 			new Vector3f(-0.5f,0.5f,0.5f),
@@ -59,7 +55,6 @@ public class CubeModel {
 			new Vector3f(-0.5f,0.5f,0.5f)
 			
 	};
-	
 	public static Vector3f[] NZ_POS = {
 			
 			new Vector3f(-0.5f,0.5f,-0.5f),
@@ -70,7 +65,7 @@ public class CubeModel {
 			new Vector3f(-0.5f,0.5f,-0.5f)
 			
 	};
-	
+
 	public static Vector2f[] UV = {
 			
 			new Vector2f(0.f, 0.f),
@@ -122,10 +117,25 @@ public class CubeModel {
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 0.f / 16.f),
-			new Vector2f(6.f / 16.f, 0.f)
+			new Vector2f(6.f / 16.f, 0.f),
 			
-	};
-	
+			// COBBLESTONE
+			new Vector2f(7.f / 16.f, 0.f),
+			new Vector2f(7.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f / 16.f),
+			new Vector2f(7.f / 16.f, 0.f),
+			
+			// BEDROCK
+			new Vector2f(8.f / 16.f, 0.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 0.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f)
+			
+	};	
 	public static Vector2f[] UV_NX = {
 			
 			// GRASS
@@ -166,10 +176,24 @@ public class CubeModel {
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 0.f / 16.f),
-			new Vector2f(6.f / 16.f, 0.f)
+			new Vector2f(6.f / 16.f, 0.f),
 			
+			// COBBLESTONE
+			new Vector2f(7.f / 16.f, 0.f),
+			new Vector2f(7.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f / 16.f),
+			new Vector2f(7.f / 16.f, 0.f),
+			
+			// BEDROCK
+			new Vector2f(8.f / 16.f, 0.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 0.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f)
 	};
-
 	public static Vector2f[] UV_PY = {
 			
 			// GRASS
@@ -210,10 +234,24 @@ public class CubeModel {
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 0.f / 16.f),
-			new Vector2f(6.f / 16.f, 0.f)
+			new Vector2f(6.f / 16.f, 0.f),
 			
+			// COBBLESTONE
+			new Vector2f(7.f / 16.f, 0.f),
+			new Vector2f(7.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f / 16.f),
+			new Vector2f(7.f / 16.f, 0.f),
+			
+			// BEDROCK
+			new Vector2f(8.f / 16.f, 0.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 0.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f)
 	};
-	
 	public static Vector2f[] UV_NY = {
 			
 			// GRASS
@@ -254,10 +292,24 @@ public class CubeModel {
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 0.f / 16.f),
-			new Vector2f(6.f / 16.f, 0.f)
+			new Vector2f(6.f / 16.f, 0.f),
 			
-	};
-	
+			// COBBLESTONE
+			new Vector2f(7.f / 16.f, 0.f),
+			new Vector2f(7.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f / 16.f),
+			new Vector2f(7.f / 16.f, 0.f),
+			
+			// BEDROCK
+			new Vector2f(8.f / 16.f, 0.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 0.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f)
+	};	
 	public static Vector2f[] UV_PZ = {
 			
 			// GRASS
@@ -298,10 +350,24 @@ public class CubeModel {
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 0.f / 16.f),
-			new Vector2f(6.f / 16.f, 0.f)
+			new Vector2f(6.f / 16.f, 0.f),
 			
+			// COBBLESTONE
+			new Vector2f(7.f / 16.f, 0.f),
+			new Vector2f(7.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f / 16.f),
+			new Vector2f(7.f / 16.f, 0.f),
+			
+			// BEDROCK
+			new Vector2f(8.f / 16.f, 0.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 0.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f)
 	};
-
 	public static Vector2f[] UV_NZ = {
 		
 			// GRASS
@@ -342,8 +408,23 @@ public class CubeModel {
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 1.f / 16.f),
 			new Vector2f(7.f / 16.f, 0.f / 16.f),
-			new Vector2f(6.f / 16.f, 0.f)
-		
+			new Vector2f(6.f / 16.f, 0.f),
+			
+			// COBBLESTONE
+			new Vector2f(7.f / 16.f, 0.f),
+			new Vector2f(7.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f / 16.f),
+			new Vector2f(7.f / 16.f, 0.f),
+			
+			// BEDROCK
+			new Vector2f(8.f / 16.f, 0.f),
+			new Vector2f(8.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 1.f / 16.f),
+			new Vector2f(9.f / 16.f, 0.f / 16.f),
+			new Vector2f(8.f / 16.f, 0.f)
 	};
 	
 	public static Vector3f[] NORMALS = {

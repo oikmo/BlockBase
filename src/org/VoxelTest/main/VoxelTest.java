@@ -1,6 +1,8 @@
 package org.VoxelTest.main;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -25,12 +27,12 @@ public class VoxelTest {
 	public static MasterRenderer renderer = null;
 	
 	public static Vector3f camPos = new Vector3f(0,0,0);
-	public static FastArrayList<ChunkMesh> chunks = new FastArrayList<ChunkMesh>();
+	public static List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<ChunkMesh>()) ;
 	public static FastArrayList<Vector3f> usedPos = new FastArrayList<>();
 	public static FastArrayList<Entity> entities = new FastArrayList<>();
 	public static boolean paused = false;
 	
-	public static int CHUNK_SIZE = 3;
+	public static int CHUNK_SIZE = 1;
 	public static int WORLD_SIZE = CHUNK_SIZE * 16;
 	
 	public static boolean closeDisplay = false;
@@ -57,7 +59,7 @@ public class VoxelTest {
 		//MAINGAMELOOP
 		while(!Display.isCloseRequested()) {
 			
-			camera.move();
+			camera.update();
 			camPos = camera.getPosition();
 			
 			theWorld.update(renderer, camera);
