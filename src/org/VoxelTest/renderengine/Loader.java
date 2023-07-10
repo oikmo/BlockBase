@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -22,6 +23,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.BufferedImageUtil;
 
 public class Loader {
 	
@@ -98,6 +100,26 @@ public class Loader {
 		}
 		textures.add(texture.getTextureID());
 		return texture.getTextureID();
+	}
+	
+	public static Texture loadTexture(String filename) {
+        try {
+            return TextureLoader.getTexture("PNG", Loader.class.getResourceAsStream(filename));
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle the exception as needed
+            return null;
+        }
+    }
+	
+	public static Texture loadTexture(String resource, BufferedImage bi) throws IOException
+	{
+		Texture t = BufferedImageUtil.getTexture(resource, bi, GL11.GL_TEXTURE_2D, // target
+				GL11.GL_RGBA8, // dest pixel format
+				GL11.GL_NEAREST, // min filter (unused)
+				GL11.GL_NEAREST);
+		textures.add(t.getTextureID());
+		return t;
 	}
 	
 	public BufferedImage loadImage(String location)

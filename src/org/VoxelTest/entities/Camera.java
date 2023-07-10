@@ -1,14 +1,11 @@
 package org.VoxelTest.entities;
 
-import java.util.Iterator;
-
 import org.VoxelTest.main.VoxelTest;
 import org.VoxelTest.renderengine.DisplayManager;
-import org.VoxelTest.renderengine.world.World;
 import org.VoxelTest.renderengine.world.chunk.Chunk;
+import org.VoxelTest.renderengine.world.chunk.ChunkManager;
 import org.VoxelTest.renderengine.world.chunk.ChunkMesh;
 import org.VoxelTest.renderengine.world.cube.Block;
-import org.VoxelTest.toolbox.datastructures.ViewFrustum;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
@@ -26,23 +23,136 @@ public class Camera {
 	Vector3f rotation;
 	float scale;
 	
-	int collisionAreaSize = 2; // Adjust this value to fit your needs
+	float collisionAreaSize = 0.5f; // Adjust this value to fit your needs
 
+	int chunkX = 0;
+	int chunkZ = 0;
 	
-	
-	ViewFrustum viewFrustum;
+	ChunkMesh currentChunk = null;
 	
 	public Camera(Vector3f position, Vector3f rotation, float scale) {
 		this.position = position;
 		this.rotation = rotation;
 		this.scale = scale;
-		viewFrustum = new ViewFrustum();
+		startThread1();
+		
 	}
+
+	boolean isChunkNull = true;
 	
-	
-	
-	public ViewFrustum getFrustum() {
-		return viewFrustum;
+	int minX;
+	int minY;
+	int minZ;
+	int maxX;
+	int maxY;
+	int maxZ;
+	private void startThread1() {
+
+		Thread chunkGetter = new Thread(new Runnable() {
+			public void run() {
+				while(!VoxelTest.closeDisplay) {
+					if(position.x >= 0) {
+						chunkX = (int) position.x / Chunk.CHUNK_SIZE;
+					} else {
+						if(position.x > -16) {
+							chunkX = (int)-1;
+						} else {
+							chunkX = (int) (position.x / Chunk.CHUNK_SIZE)-1;
+						}
+					}
+					
+					if(position.z >= 0) {
+						chunkZ = (int) position.z / Chunk.CHUNK_SIZE;
+					} else {
+						if(position.z > -16) {
+							chunkZ = (int)-1;
+						} else {
+							chunkZ = (int) (position.z / Chunk.CHUNK_SIZE)-1;
+						}
+					}
+					
+					//System.out.println("("+(int) position.x+ " " + (int) position.z + ") (" + chunkX + " " + chunkZ + ")");
+					for(int i = 0; i < VoxelTest.theWorld.chunks.size(); i++) {
+						ChunkMesh mesh = VoxelTest.theWorld.chunks.get(i);
+						if(mesh != null) {
+							//
+							if(mesh.chunk.origin.x/16 == chunkX && mesh.chunk.origin.z/16 == chunkZ) {
+								currentChunk = mesh;
+							}
+							
+						}
+					}
+				}
+			}
+		});
+		
+		chunkGetter.setName("Chunk Grabber");
+		chunkGetter.start();
+		
+		/*new Thread(new Runnable() {
+			public void run() {
+				while(!VoxelTest.closeDisplay) {
+					//System.out.println("tru!!");
+					// Calculate the minimum and maximum indices for x, y, and z coordinates
+					if( minX != Math.max((int) (position.x - collisionAreaSize), 0)) {
+						minX = Math.max((int) (position.x - collisionAreaSize), 0);
+					}
+					if( maxX != Math.max((int) (position.x + collisionAreaSize), 16 - 1)) {
+						maxX = Math.max((int) (position.x + collisionAreaSize), 16 - 1);
+					}
+					if(maxX != Math.min((int) (position.x + collisionAreaSize), 16 - 1)) {
+						maxX = Math.min((int) (position.x + collisionAreaSize), 16 - 1);
+					}
+					if(minY != Math.max((int) (position.y - collisionAreaSize), 0)) {
+						minY = Math.max((int) (position.y - collisionAreaSize), 0);
+					}
+					if(maxY != Math.min((int) (position.y + collisionAreaSize), World.WORLD_HEIGHT - 1)) {
+						maxY = Math.min((int) (position.y + collisionAreaSize), World.WORLD_HEIGHT - 1);
+					}
+					if(minZ != Math.max((int) (position.z - collisionAreaSize), 0)) {
+						minZ = Math.max((int) (position.z - collisionAreaSize), 0);
+					}
+					if(maxZ != Math.min((int) (position.z + collisionAreaSize), 16 - 1)) {
+						maxZ = Math.min((int) (position.z + collisionAreaSize), 16 - 1);
+					}
+					// Retrieve the chunk from your chunk data structure using the calculated coordinates
+					if(isChunkNull) {
+						@SuppressWarnings("unused")
+						boolean bool = currentChunk != null;
+						//System.out.println(currentChunk != null);
+					}
+					
+					if(currentChunk != null) {
+						if(isChunkNull) {
+							isChunkNull = false;
+						}
+						//System.out.println("(" + (int) currentChunk.origin.x/16 + " " + (int)currentChunk.origin.z/16 + ") (" + chunkX+ " "+ chunkZ + ")");
+						
+						boolean collisionDetected = false;
+						Block block = currentChunk.getBlock(position);
+						//System.out.println("block : " + block + " blockPos : " + x + " " + y + " " + z + " player : " + (int)position.x + " " + (int) position.y + " " + (int)position.z);
+						if (block != null && block.collidesWith((int)position.x, (int)position.y, (int)position.z)) {
+							//System.out.println("block : " + x + " " + y + " " + z + " player : " + (int)position.x + " " + (int) position.y + " " + (int)position.z);
+							// Collision detected with the block at position (x, y, z)
+							// Stop player from falling further
+							//position.y = block.position.y + 1; // Set player position just above the block
+							//System.out.println("Block");
+							collisionDetected = true;
+							break;
+						}
+						if(!collisionDetected) {
+						}
+					} else {
+						if(!isChunkNull) {
+							isChunkNull = true;
+						}
+						//System.out.println("CHUNK IS NULL!"); 
+						
+					}
+				}
+			}
+		});*/
+		
 	}
 	
 	public void increasePosition(float dx, float dy, float dz) {
@@ -59,6 +169,10 @@ public class Camera {
 
 	public Vector3f getPosition() {
 		return position;
+	}
+	
+	public Vector3f getRotation() {
+		return rotation;
 	}
 
 	public void setPosition(Vector3f position) {
@@ -98,73 +212,48 @@ public class Camera {
 	}
 	public void update() {
 		move();
-		// Calculate the minimum and maximum indices for x, y, and z coordinates
-		int minX = Math.max((int) (position.x - collisionAreaSize), 0);
-		int maxX = Math.min((int) (position.x + collisionAreaSize), 16 - 1);
-		int minY = Math.max((int) (position.y - collisionAreaSize), 0);
-		int maxY = Math.min((int) (position.y + collisionAreaSize), World.WORLD_HEIGHT - 1);
-		int minZ = Math.max((int) (position.z - collisionAreaSize), 0);
-		int maxZ = Math.min((int) (position.z + collisionAreaSize), 16 - 1);
-		
-		int chunkX = (int) position.x / Chunk.CHUNK_SIZE;
-		int chunkZ = (int) position.z / Chunk.CHUNK_SIZE;
-		// Retrieve the chunk from your chunk data structure using the calculated coordinates
 		
 		
 		
 		
-		if(getChunk(chunkX, chunkZ) != null) {
-			System.out.println((int) getChunk(chunkX, chunkZ).origin.x + " " + chunkX + " " + (int)getChunk(chunkX, chunkZ).origin.z + " " + chunkZ);
+		Vector3f vec = new Vector3f(position.x, position.y, position.z);
+		
+		if(currentChunk != null) {
+			ChunkManager.updateMesh(currentChunk);
 			
-			boolean collisionDetected = false;
-			for (int x = minX; x <= maxX; x++) {
-				for (int y = minY; y <= maxY; y++) {
-					for (int z = minZ; z <= maxZ; z++) {
-						
-						Block block = getChunk(chunkX, chunkZ).blocks[x][y][z];
-						if (block != null && block.collidesWith((int)position.x, (int)position.y, (int)position.z)) {
-							System.out.println("block : " + x + " " + y + " " + z + " player : " + (int)position.x + " " + (int) position.y + " " + (int)position.z);
-							// Collision detected with the block at position (x, y, z)
-							// Stop player from falling further
-							position.y = block.position.y + 1; // Set player position just above the block
-							collisionDetected = true;
-							break;
-						} else {
-							//System.out.println("chunk : " + chunkX + " " + chunkZ + " player : " + (int)position.x + " " + (int) position.y + " " + (int)position.z);
-						}
-						if (!collisionDetected) {
-							if(position.y <= 60)
-							position.y -= 1 * DisplayManager.getFrameTimeSeconds(); 
-						}
-					}
-
-				}
+			System.out.println("(" + (int)currentChunk.chunk.origin.x + " " + (int)currentChunk.chunk.origin.z + ") ("  + (int) position.x  + " " + (int) position.z+")");
+			if(Keyboard.isKeyDown(Keyboard.KEY_F)) {
+				//System.out.println("");
+				ChunkManager.setBlock(new Vector3f(position.x, position.y, position.z), new Block(ChunkManager.getChunkBlockPos(vec, currentChunk), Block.Type.BEDROCK), currentChunk);
+			} else if(Keyboard.isKeyDown(Keyboard.KEY_G)) {
+				System.out.println("(" + (int)currentChunk.chunk.origin.x/16 + " " + (int)currentChunk.chunk.origin.z/16 + ") ("  + chunkX  + " " + chunkZ+")");
+				//if(ChunkManager.getBlock(position, currentChunk)!= null) {
+					//System.out.println(ChunkManager.getBlock(position, currentChunk).type.name());
+				//} else {
+					//System.out.println("null");
+				//}
+				
+			} else if(Keyboard.isKeyDown(Keyboard.KEY_H)) {
+				System.out.println("(" + (int)currentChunk.chunk.origin.x + " " + (int)currentChunk.chunk.origin.z + ") ("  + (int) position.x  + " " + (int) position.z+")");
+				//if(ChunkManager.getBlock(position, currentChunk)!= null) {
+					//System.out.println(ChunkManager.getBlock(position, currentChunk).type.name());
+				//} else {
+					//System.out.println("null");
+				//}
+				
 			}
-
 		} else {
-			
-			
+			//System.out.println("ball scak!!!");
 		}
 	}
-		
-	public Chunk getChunk(int chunkX,  int chunkZ) {
-	    // Iterate through your chunk data structure
-	    for (ChunkMesh chunk : VoxelTest.chunks) {
-	        if (chunk.chunk.origin.x == chunkX && chunk.chunk.origin.z == chunkZ) {
-	            return chunk.chunk; // Return the matching chunk
-	        }
-	    }
-	    return null; // Chunk not found
-	}
-
-		//index =
 	
 	public void move() {
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			position.y = 75;
+			position.y += 10 * DisplayManager.getFrameTimeSeconds();
 		} 
-		
-		viewFrustum.updateFrustum();
+		if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+			position.y -= 10 * DisplayManager.getFrameTimeSeconds();
+		} 
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 			speed = SPRINT_SPEED;
 		} else {
@@ -187,11 +276,12 @@ public class Camera {
 		}
 		
 		float dx = (float) -(moveAt * Math.sin(Math.toRadians(rotation.y)));
-		float dy = (float) (moveAt * Math.sin(Math.toRadians(rotation.x)));
+		//float dy = (float) (moveAt * Math.sin(Math.toRadians(rotation.x)));
 		float dz = (float) (moveAt * Math.cos(Math.toRadians(rotation.y)));
 		
-		position.x += dx;
-		position.z += dz;
+		position.x += (dx*100) * DisplayManager.getFrameTimeSeconds();
+		//position.y += dy;
+		position.z += (dz*100) * DisplayManager.getFrameTimeSeconds();
 		//increasePosition(dx, dy, dz);
 	}
 }

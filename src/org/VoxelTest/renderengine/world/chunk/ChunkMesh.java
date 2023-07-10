@@ -5,38 +5,36 @@ import java.util.*;
 import org.VoxelTest.renderengine.world.World;
 import org.VoxelTest.renderengine.world.cube.*;
 import org.VoxelTest.renderengine.models.CubeModel;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class ChunkMesh {
 	public List<Vertex> vertices;
-	private List<Float> positionsList;
-	private List<Float> uvsList;
-	private List<Float> normalsList;
-
+	HashMap<Vector3f, Vertex> uniqueVertices = new HashMap<>();
 	public float[] positions, uvs, normals;
 	
 	public Chunk chunk;
+	
+	public boolean dirty = false;
 	
 	public ChunkMesh(Chunk chunk) {
 		this.chunk = chunk;
 		
 		vertices = new ArrayList<Vertex>();
-		positionsList = new ArrayList<Float>();
-		uvsList = new ArrayList<Float>();
-		normalsList = new ArrayList<Float>();
 		
 		buildMesh();
 		populateLists();
 	}
-	
-	public void update(Chunk chunk) {
-		this.chunk = chunk;
-		
+
+	public void rebuildMesh() {
+		vertices.clear();
 		buildMesh();
 		populateLists();
 	}
 	
 	private void buildMesh() {
+		vertices.clear();
+		uniqueVertices.clear();
 		//loop thru each block in chunk and determine which faces are visible :3
 		for (int x = 0; x < chunk.blocks.length; x++) {
 		    for (int y = 0; y < World.WORLD_HEIGHT; y++) {
@@ -61,12 +59,13 @@ public class ChunkMesh {
 		                        int neighborZ = z + dz;
 		                        
 		                        // Check if the neighbour is within the chunk bounds
-		                        if (neighborX >= 0 && neighborX < chunk.blocks.length &&
-		                            neighborY >= 0 && neighborY < World.WORLD_HEIGHT &&
-		                            neighborZ >= 0 && neighborZ < chunk.blocks[neighborX][neighborY].length) {
+		                        if (neighborX >= 0 && neighborX < Chunk.CHUNK_SIZE &&
+		                            neighborY >= 0 && neighborY < 128 &&
+		                            neighborZ >= 0 && neighborZ < Chunk.CHUNK_SIZE) {
 		                            Block blockJ = chunk.blocks[neighborX][neighborY][neighborZ];
 		                            
 		                            if(blockJ == null) { continue; }
+		                            
 		                            //PX
 		            				if(((blockI.position.x + 1) == (blockJ.position.x)) && ((blockI.position.y) == (blockJ.position.y)) && ((blockI.position.z) == (blockJ.position.z))) {
 		            					px = true;
@@ -97,84 +96,81 @@ public class ChunkMesh {
 		            }
 		          //Add visible face to the chunkMesh
 					
-					if(!px) {
-						for(int k = 0; k < 6; k++) {
-							vertices.add(new Vertex(new Vector3f(CubeModel.PX_POS[k].x + blockI.position.x, CubeModel.PX_POS[k].y + blockI.position.y, CubeModel.PX_POS[k].z + blockI.position.z), CubeModel.UV_PX[(blockI.getType() * 6) + k], CubeModel.NORMALS[k]));
-						}
-					}
-					
-					if(!nx) {
-						for(int k = 0; k < 6; k++) {
-							vertices.add(new Vertex(new Vector3f(CubeModel.NX_POS[k].x + blockI.position.x, CubeModel.NX_POS[k].y + blockI.position.y, CubeModel.NX_POS[k].z + blockI.position.z), CubeModel.UV_NX[(blockI.getType() * 6) + k], CubeModel.NORMALS[k]));
-						}
-					}
-					
-					if(!py) {
-						for(int k = 0; k < 6; k++) {
-							vertices.add(new Vertex(new Vector3f(CubeModel.PY_POS[k].x + blockI.position.x, CubeModel.PY_POS[k].y + blockI.position.y, CubeModel.PY_POS[k].z + blockI.position.z), CubeModel.UV_PY[(blockI.getType() * 6) + k], CubeModel.NORMALS[k]));
-						}
-					}
-					
-					if(!ny) {
-						for(int k = 0; k < 6; k++) {
-							vertices.add(new Vertex(new Vector3f(CubeModel.NY_POS[k].x + blockI.position.x, CubeModel.NY_POS[k].y + blockI.position.y, CubeModel.NY_POS[k].z + blockI.position.z), CubeModel.UV_NY[(blockI.getType() * 6) + k], CubeModel.NORMALS[k]));
-						}
-					}
-					
-					if(!pz) {
-						for(int k = 0; k < 6; k++) {
-							vertices.add(new Vertex(new Vector3f(CubeModel.PZ_POS[k].x + blockI.position.x, CubeModel.PZ_POS[k].y + blockI.position.y, CubeModel.PZ_POS[k].z + blockI.position.z), CubeModel.UV_PZ[(blockI.getType() * 6) + k], CubeModel.NORMALS[k]));
-						}
-					}
-					
-					if(!nz) {
-						for(int k = 0; k < 6; k++) {
-							vertices.add(new Vertex(new Vector3f(CubeModel.NZ_POS[k].x + blockI.position.x, CubeModel.NZ_POS[k].y + blockI.position.y, CubeModel.NZ_POS[k].z + blockI.position.z),CubeModel.UV_NZ[(blockI.getType() * 6) + k], CubeModel.NORMALS[k]));
-						}
-					}
+		            if (!px) {
+	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.PX_POS, CubeModel.UV_PX, CubeModel.NORMALS);
+	                }
+
+	                if (!nx) {
+	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.NX_POS, CubeModel.UV_NX, CubeModel.NORMALS);
+	                } 
+
+	                if (!py) {
+	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.PY_POS, CubeModel.UV_PY, CubeModel.NORMALS);
+	                }
+
+	                if (!ny) {
+	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.NY_POS, CubeModel.UV_NY, CubeModel.NORMALS);
+	                }
+
+	                if (!pz) {
+	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.PZ_POS, CubeModel.UV_PZ, CubeModel.NORMALS);
+	                }
+
+	                if (!nz) {
+	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.NZ_POS, CubeModel.UV_NZ, CubeModel.NORMALS);
+	                }
 		        }	
 		        
 			}
-			
-			
-			
 		}
 		
+		dirty = true;
 	}
 	
+	private void addFaceVertices(HashMap<Vector3f, Vertex> uniqueVertices, List<Vertex> vertices, Block block, Vector3f[] positions, Vector2f[] uvs, Vector3f[] normals) {
+	    int type = block.getType();
+	    int startIndex = type * 6;
+
+	    for (int k = 0; k < 6; k++) {
+	        Vector3f position = new Vector3f(positions[k].x + block.position.x, positions[k].y + block.position.y, positions[k].z + block.position.z);
+	        Vertex vertex = uniqueVertices.get(position);
+
+	        if (vertex == null) {
+	            vertex = new Vertex(position, uvs[startIndex + k], normals[k]);
+	            uniqueVertices.put(position, vertex);
+	            vertices.add(vertex);
+	        }
+
+	        //block.setFaceIndex(k, vertices.indexOf(vertex));
+	    }
+	}
+	
+
+	
 	private void populateLists() {
-		for(int i = 0; i < vertices.size(); i++) {
-			positionsList.add(vertices.get(i).positions.x);
-			positionsList.add(vertices.get(i).positions.y);
-			positionsList.add(vertices.get(i).positions.z);
-			
-			uvsList.add(vertices.get(i).uvs.x);
-			uvsList.add(vertices.get(i).uvs.y);
-			
-			normalsList.add(vertices.get(i).normals.x);
-			normalsList.add(vertices.get(i).normals.y);
-			normalsList.add(vertices.get(i).normals.z);
-		}
 		
-		positions = new float[positionsList.size()];
-		uvs = new float[uvsList.size()];
-		normals = new float[normalsList.size()];
-		
-		for(int i = 0; i < positionsList.size(); i++) {
-			positions[i] = positionsList.get(i);
-		}
-		
-		for(int i = 0; i < uvsList.size(); i++) {
-			uvs[i] = uvsList.get(i);
-		}
-		
-		for(int i = 0; i < normalsList.size(); i++) {
-			normals[i] = normalsList.get(i);
-		}
-		
-		positionsList.clear();
-		uvsList.clear();
-		normalsList.clear();
+		int numVertices = vertices.size();
+	    positions = new float[numVertices * 3]; // Each vertex has 3 position components
+	    uvs = new float[numVertices * 2]; // Each vertex has 2 uv components
+	    normals = new float[numVertices * 3]; // Each vertex has 3 normal components
+
+	    for(int i = 0; i < numVertices; i++) {
+	        Vertex vertex = vertices.get(i);
+	        int positionIndex = i * 3;
+	        int uvIndex = i * 2;
+	        int normalIndex = i * 3;
+
+	        positions[positionIndex] = vertex.posX;
+	        positions[positionIndex + 1] = vertex.posY;
+	        positions[positionIndex + 2] = vertex.posZ;
+
+	        uvs[uvIndex] = vertex.uvX;
+	        uvs[uvIndex + 1] = vertex.uvY;
+
+	        normals[normalIndex] = vertex.normalX;
+	        normals[normalIndex + 1] = vertex.normalY;
+	        normals[normalIndex + 2] = vertex.normalZ;
+	    }
 		
 	}
 } 

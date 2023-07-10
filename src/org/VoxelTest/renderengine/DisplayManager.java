@@ -6,30 +6,35 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import org.VoxelTest.main.VoxelTest;
+import org.VoxelTest.renderengine.world.audio.AudioMaster;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.*;
+import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 public class DisplayManager {
-	private static final int WIDTH = 1280;
-	private static final int HEIGHT = 720;
-	private static final int FPS_CAP = 120;
+	public static final int WIDTH = 1280;
+	public static final int HEIGHT = 720;
+	private static final int FPS_CAP = 60;
 	
 	private static long lastFrameTime;
 	private static float delta;
 	static long startTime = System.nanoTime();
     static int frames = 0;
 	
-	public static void createDisplay() {
+	public static void createDisplay() throws MalformedURLException, URISyntaxException {
 		ContextAttribs attribs = new ContextAttribs(3,2).withForwardCompatible(true).withProfileCore(true);
 		
 		try {
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.create(new PixelFormat(), attribs);
-			Display.setTitle("[DEBUG] VoxelTest");
+			AudioMaster.init();
+			Display.setTitle("[DEBUG] VoxelENGINE - OIKMO");
 			GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -61,6 +66,7 @@ public class DisplayManager {
 	}
 	
 	public static void closeDisplay() {
+		AL.destroy();
 		VoxelTest.loader.cleanUp();
 		VoxelTest.renderer.cleanUp();
 		Display.destroy();

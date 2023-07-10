@@ -1,20 +1,17 @@
 package org.VoxelTest.renderengine.renderers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.VoxelTest.entities.Camera;
-import org.VoxelTest.entities.Entity;
-import org.VoxelTest.main.VoxelTest;	
+import org.VoxelTest.entities.*;
+import org.VoxelTest.main.VoxelTest;
 import org.VoxelTest.renderengine.models.TexturedModel;
 import org.VoxelTest.renderengine.shaders.main.StaticShader;
-import org.VoxelTest.toolbox.Maths;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Matrix4f;
+import org.VoxelTest.renderengine.world.chunk.Chunk;
+import org.VoxelTest.renderengine.world.cube.Block;
+
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.*;
+import org.lwjgl.util.vector.*;
 
 public class MasterRenderer {
 	
@@ -24,7 +21,7 @@ public class MasterRenderer {
 	private static final float NEAR_PLANE = 0.01f;
 	private static final float FAR_PLANE = 1000f;
 	
-	Map<TexturedModel, HashSet<Entity>> entities = new HashMap<TexturedModel, HashSet<Entity>>();
+	public Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
 	//EntityRenderer renderer = new EntityRenderer();
 	static StaticShader shader = new StaticShader();
 	
@@ -53,7 +50,6 @@ public class MasterRenderer {
 	    
 	    EntityRenderer.render(entities);
 		
-	    
 	    shader.stop();
 		
 		entities.clear();
@@ -61,12 +57,12 @@ public class MasterRenderer {
 	public void addEntity(Entity entity) {
 		TexturedModel model = entity.getModel();
 		
-		HashSet<Entity> batch = entities.get(model);
+		List<Entity> batch = entities.get(model);
 		
 		if(batch != null) {
 			batch.add(entity);
 		} else {
-			HashSet<Entity> newBatch = new HashSet<>();
+			List<Entity> newBatch = new ArrayList<>();
 			newBatch.add(entity);
 			entities.put(model, newBatch);
 		}
@@ -75,7 +71,7 @@ public class MasterRenderer {
 	public void removeEntity(Entity entity) {
 		TexturedModel model = entity.getModel();
 		
-		entities.remove(model, VoxelTest.entities);
+		entities.remove(model,  VoxelTest.theWorld.entities);
 	}
 	
 	public Matrix4f getProjectionMatrix() {
@@ -102,4 +98,5 @@ public class MasterRenderer {
 	public void cleanUp() {
 		shader.cleanUp();
 	}
+	
 }

@@ -20,6 +20,6 @@ void main (void) {
 	pass_textureCoords = textureCoords;
 	
 	float distance = length(posRelativeToCam.xyz);
-	visibility = exp(-pow((distance*density), gradient));
-	visibility = clamp(visibility, 0.0, 1.0);
+	//visibility = exp(-pow((distance*density), gradient));
+	//visibility = clamp(visibility, 0.0, 1.0);
 }
