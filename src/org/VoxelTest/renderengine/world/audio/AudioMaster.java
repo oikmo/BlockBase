@@ -28,7 +28,14 @@ public class AudioMaster {
 	public static FileData loadSound(String file) {
 		int buffer = AL10.alGenBuffers();
 		buffers.add(buffer);
-		WaveData waveFile = WaveData.create(AudioMaster.class.getResourceAsStream("./sounds/" + file + ".wav"));
+		System.out.println(AudioMaster.class.getResourceAsStream("sounds/" + file + ".wav"));
+		WaveData waveFile = null;
+		if(AudioMaster.class.getResourceAsStream("sounds/" + file + ".wav") != null) {
+			waveFile  = WaveData.create(AudioMaster.class.getResourceAsStream("sounds/" + file + ".wav"));
+		} else {
+			waveFile = WaveData.create(AudioMaster.class.getResourceAsStream(file + ".wav"));
+		}
+		
 		AL10.alBufferData(buffer, waveFile.format, waveFile.data, waveFile.samplerate);
 		waveFile.dispose();
 		return new FileData(buffer, waveFile);

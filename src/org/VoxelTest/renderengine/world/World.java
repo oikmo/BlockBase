@@ -86,9 +86,26 @@ public class World {
 		}).start();
 	}
 	
+	public void updateMeshIfNeeded() {
+		synchronized(chunks) {
+			for (ChunkMesh chunkMesh : chunks) {
+		        Chunk chunk = chunkMesh.chunk;
+		        if (chunk.isDirty()) {
+		            chunkMesh.rebuildMesh();
+		            chunk.setDirty(false);
+		        }
+		    }
+		}
+	    
+	}
+	
 	boolean chunksModified = true;
 	public void update(MasterRenderer renderer, Camera camera) {	
+		
+		updateMeshIfNeeded();
 
+		
+		
 		for (int index = 0; index < chunks.size(); index++) {
 		    if (chunks.get(index).positions == null || chunks.get(index).uvs == null || chunks.get(index).normals == null) {
 		        continue; // Skip the chunk if positions, UVs, or normals are null

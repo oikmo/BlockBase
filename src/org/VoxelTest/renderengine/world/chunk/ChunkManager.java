@@ -25,49 +25,39 @@ public class ChunkManager {
 	}
 	
 	public static void literallyJustForTesting(Vector3f globalOrigin, Chunk chunk) {
-		int localX = (int) (globalOrigin.x - chunk.origin.x);
+		int localX = (int) (globalOrigin.x + chunk.origin.x);
 		int localY = (int) globalOrigin.y;
-		int localZ = (int) (globalOrigin.z - chunk.origin.z);
+		int localZ = (int) (globalOrigin.z + chunk.origin.z);
 		System.out.println("(" + localX + " " + localY + " " + localZ + ") (" + (int)globalOrigin.x + " " + (int)globalOrigin.y + " " + (int)globalOrigin.z + ")");
 	}
 	
-	public static void setBlock(Vector3f globalOrigin, Block block, ChunkMesh chunkMesh) {
-		int localX = (int) Math.floorMod((int) (globalOrigin.x + chunkMesh.chunk.origin.x), Chunk.CHUNK_SIZE);
+	public static void setBlock(Vector3f globalOrigin, Block block, Chunk chunk) {
+		int localX = (int) (globalOrigin.x - chunk.origin.x);
 		int localY = (int) globalOrigin.y;
-		int localZ = (int) Math.floorMod((int) (globalOrigin.z + chunkMesh.chunk.origin.z), Chunk.CHUNK_SIZE);
+		int localZ = (int) (globalOrigin.z - chunk.origin.z);
 		
 		if (isWithinChunk(localX, localY, localZ)) {
-			if(chunkMesh.chunk.blocks[localX][localY][localZ] == null) {
-				chunkMesh.chunk.blocks[localX][localY][localZ] = block;
-				System.out.println("am i created? (" + localX + " " + localY + " " + localZ + ") (" + (int)chunkMesh.chunk.origin.x + " " + (int) chunkMesh.chunk.origin.y +  " "+(int) chunkMesh.chunk.origin.z +  ")");
-				chunkMesh.dirty = true;
-			} else {
-				System.out.println("am i not null? (" + localX + " " + localY + " " + localZ + ") (" + (int)globalOrigin.x + " " + (int) globalOrigin.y +  " "+(int) globalOrigin.z +  ") " + chunkMesh.chunk.blocks[localX][localY][localZ].type.name());
-			}
+			
+			if (block != null) {
+	            if (chunk.blocks[localX][localY][localZ] == null) {
+	                chunk.blocks[localX][localY][localZ] = block;
+	            } else {
+	                return;
+	            }
+	        } else {
+	            chunk.blocks[localX][localY][localZ] = null;
+	        }
+			System.out.println(localX + " " + localY + " " + localZ);
+			chunk.setDirty();
+
 		} else {
-			System.out.println("am i out? (" + localX + " " + localY + " " + localZ + ")");
+			//System.out.println("am i out? (" + localX + " " + localY + " " + localZ + ")");
 		}
 	}
-	
-	// Call this method to update the mesh only when necessary
-	public static void updateMesh(ChunkMesh chunkMesh) {
-	    if (chunkMesh.dirty) {
-	        chunkMesh.rebuildMesh();
-	        chunkMesh.dirty = false; // Reset the dirty flag
-	    }
-	}
 
-
-	private static boolean isWithinChunk(int localX, int localY, int localZ) {
-		return localX >= 0 && localX < 16 &&
+	public static boolean isWithinChunk(int localX, int localY, int localZ) {
+		return localX >= 0 && localX < Chunk.CHUNK_SIZE &&
 				localY >= 0 && localY < World.WORLD_HEIGHT &&
-				localZ >= 0 && localZ < 16;
+				localZ >= 0 && localZ < Chunk.CHUNK_SIZE;
 	}
-	
-	public static Vector3f getChunkBlockPos(Vector3f playerPos, ChunkMesh chunkMesh) {
-        int x = (int) (playerPos.x - chunkMesh.chunk.origin.x);
-        int y = (int) playerPos.y;
-        int z = (int) (playerPos.z - chunkMesh.chunk.origin.z);
-        return new Vector3f(x, y, z);
-    }
 }

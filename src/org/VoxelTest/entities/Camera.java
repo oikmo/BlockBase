@@ -218,31 +218,16 @@ public class Camera {
 		
 		
 		
-		Vector3f vec = new Vector3f(position.x, position.y, position.z);
+		//Vector3f vec = new Vector3f(position.x, position.y, position.z);
 		
 		if(currentChunk != null) {
-			ChunkManager.updateMesh(currentChunk);
 			
-			System.out.println("(" + (int)currentChunk.chunk.origin.x + " " + (int)currentChunk.chunk.origin.z + ") ("  + (int) position.x  + " " + (int) position.z+")");
-			if(Keyboard.isKeyDown(Keyboard.KEY_F)) {
+			//System.out.println("(" + (int)currentChunk.chunk.origin.x + " " + (int)currentChunk.chunk.origin.z + ") ("  + (int) position.x  + " " + (int) position.z+")");
+			if(Mouse.isButtonDown(1)) {
 				//System.out.println("");
-				ChunkManager.setBlock(new Vector3f(position.x, position.y, position.z), Block.bedrock, currentChunk);
-			} else if(Keyboard.isKeyDown(Keyboard.KEY_G)) {
-				System.out.println("(" + (int)currentChunk.chunk.origin.x/16 + " " + (int)currentChunk.chunk.origin.z/16 + ") ("  + chunkX  + " " + chunkZ+")");
-				//if(ChunkManager.getBlock(position, currentChunk)!= null) {
-					//System.out.println(ChunkManager.getBlock(position, currentChunk).type.name());
-				//} else {
-					//System.out.println("null");
-				//}
-				
-			} else if(Keyboard.isKeyDown(Keyboard.KEY_H)) {
-				System.out.println("(" + (int)currentChunk.chunk.origin.x + " " + (int)currentChunk.chunk.origin.z + ") ("  + (int) position.x  + " " + (int) position.z+")");
-				//if(ChunkManager.getBlock(position, currentChunk)!= null) {
-					//System.out.println(ChunkManager.getBlock(position, currentChunk).type.name());
-				//} else {
-					//System.out.println("null");
-				//}
-				
+				ChunkManager.setBlock(new Vector3f(position.x, position.y, position.z), Block.bedrock, currentChunk.chunk);
+			} else if(Mouse.isButtonDown(0)) {
+				ChunkManager.setBlock(new Vector3f(position.x, position.y, position.z), null, currentChunk.chunk);
 			}
 		} else {
 			//System.out.println("ball scak!!!");

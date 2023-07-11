@@ -124,8 +124,8 @@ public class ChunkMesh {
 		        
 			}
 		}
-		
-		dirty = true;
+		System.out.println("loop!");
+		//dirty = true;
 	}
 	
 	private void addFaceVertices(HashMap<Vector3f, Vertex> uniqueVertices, List<Vertex> vertices, Block block, int x, int y, int z, Vector3f[] positions, Vector2f[] uvs, Vector3f[] normals) {

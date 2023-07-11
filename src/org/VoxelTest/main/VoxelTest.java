@@ -39,6 +39,8 @@ public class VoxelTest {
 	
 	public static World theWorld = null;
 	
+	public static boolean isOpenGL = false;
+	
 	public static void main(String[] args) throws LWJGLException, IOException, InterruptedException, URISyntaxException {
 
 		DisplayManager.createDisplay();
@@ -51,15 +53,10 @@ public class VoxelTest {
 		
 		theWorld = new World("AY YO KYS DARLING!!");
 		
-		
-		RawModel model123 = loader.loadToVAO(AtlasCubeModel.vertices, AtlasCubeModel.indices, AtlasCubeModel.uv);
-		ModelTexture texture = new ModelTexture(loader.loadSquareTexture("grassTex"));
-		TexturedModel texModel123 = new TexturedModel(model123, texture);
-		Cube entity = new Cube(texModel123, new Vector3f(0, 80, 0));
+
 		
 		Camera camera = new Camera(new Vector3f(0,78,0), new Vector3f(0,0,0), 1);
-		entity.setCamera(camera);
-		
+
 		AudioMaster.playBackgroundMusic("dontRemindMe");
 		//Sound.play("./Portrait-of-a-Blank-Slate.mp3");
 		
@@ -68,9 +65,7 @@ public class VoxelTest {
 			
 			camera.update();
 			camPos = camera.getPosition();
-			entity.update();
-			
-			renderer.addEntity(entity);
+
 			theWorld.update(renderer, camera);
 			renderer.render(camera);
 			

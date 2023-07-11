@@ -8,6 +8,7 @@ import org.VoxelTest.renderengine.models.TexturedModel;
 import org.VoxelTest.renderengine.shaders.main.StaticShader;
 import org.VoxelTest.renderengine.world.chunk.Chunk;
 import org.VoxelTest.renderengine.world.cube.blocks.Block;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.*;
@@ -33,14 +34,26 @@ public class MasterRenderer {
 	
 	public void prepare() {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		
+		
+		
 		GL11.glClearColor(0.4f, 0.7f, 1.0f, 1);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
 	}
 	
 	Matrix4f viewMatrix;
 	
 	public void render(Camera camera) {
 		prepare();
+		
+		if(Keyboard.isKeyDown(Keyboard.KEY_I)) {
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		    GL11.glLineWidth(10.0f);
+		} else {
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		}
 		
 	    shader.start();
 	    shader.loadViewMatrix(camera);

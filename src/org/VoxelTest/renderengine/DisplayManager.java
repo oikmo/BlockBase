@@ -36,6 +36,7 @@ public class DisplayManager {
 			AudioMaster.init();
 			Display.setTitle("[DEBUG] VoxelENGINE - OIKMO");
 			GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+			VoxelTest.isOpenGL = GL11.glGetString(GL11.GL_VERSION) != null;
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}

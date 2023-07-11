@@ -13,6 +13,20 @@ public class Chunk {
 	
 	boolean isYes = false;
 	
+	public boolean isDirty;
+	
+	public void setDirty() {
+		isDirty = true;
+	}
+	
+	public void setDirty(boolean dirty) {
+		isDirty = dirty;
+	}
+	
+	public boolean isDirty() {
+	    return isDirty;
+	}
+	
 	public Block[][][] blocks;
 	//public Fast3DArray<Block> bloccks;
 	
@@ -79,32 +93,22 @@ public class Chunk {
 	            }
 	        }
 	    }
-
-	    // Set the top layer blocks to grass
-	    Block[] topLayer = getTopLayer();
-	    for (int i = 0; i < topLayer.length; i++) {
-	        Block block = topLayer[i];
-	        if (block != null) {
-	            block.setType(Block.Type.GRASS); // Set the block type to grass
-	        }
-	    }
+	    
+	    getTopLayer();
 	}
 	
-	private Block[] getTopLayer() {
-	    Block[] topLayer = new Block[CHUNK_SIZE * CHUNK_SIZE];
+	private void getTopLayer() {
 
 	    for (int x = 0; x < CHUNK_SIZE; x++) {
 	        for (int z = 0; z < CHUNK_SIZE; z++) {
 	            for (int y = World.WORLD_HEIGHT - 1; y >= 0; y--) {
 	                if (blocks[x][y][z] != null) {
-	                    topLayer[x * CHUNK_SIZE + z] = blocks[x][y][z];
+	                	blocks[x][y + 1][z] = Block.grass;
 	                    break;
 	                }
 	            }
 	        }
 	    }
-
-	    return topLayer;
 	}
 	
 	private Block calculateBlockType(int height) {
