@@ -5,7 +5,7 @@ import org.VoxelTest.renderengine.DisplayManager;
 import org.VoxelTest.renderengine.world.chunk.Chunk;
 import org.VoxelTest.renderengine.world.chunk.ChunkManager;
 import org.VoxelTest.renderengine.world.chunk.ChunkMesh;
-import org.VoxelTest.renderengine.world.cube.Block;
+import org.VoxelTest.renderengine.world.cube.blocks.Block;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
@@ -80,6 +80,8 @@ public class Camera {
 								currentChunk = mesh;
 							}
 							
+						} else {
+							System.out.println("Null!");
 						}
 					}
 				}
@@ -224,7 +226,7 @@ public class Camera {
 			System.out.println("(" + (int)currentChunk.chunk.origin.x + " " + (int)currentChunk.chunk.origin.z + ") ("  + (int) position.x  + " " + (int) position.z+")");
 			if(Keyboard.isKeyDown(Keyboard.KEY_F)) {
 				//System.out.println("");
-				ChunkManager.setBlock(new Vector3f(position.x, position.y, position.z), new Block(ChunkManager.getChunkBlockPos(vec, currentChunk), Block.Type.BEDROCK), currentChunk);
+				ChunkManager.setBlock(new Vector3f(position.x, position.y, position.z), Block.bedrock, currentChunk);
 			} else if(Keyboard.isKeyDown(Keyboard.KEY_G)) {
 				System.out.println("(" + (int)currentChunk.chunk.origin.x/16 + " " + (int)currentChunk.chunk.origin.z/16 + ") ("  + chunkX  + " " + chunkZ+")");
 				//if(ChunkManager.getBlock(position, currentChunk)!= null) {

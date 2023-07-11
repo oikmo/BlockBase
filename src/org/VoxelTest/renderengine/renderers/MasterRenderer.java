@@ -7,8 +7,7 @@ import org.VoxelTest.main.VoxelTest;
 import org.VoxelTest.renderengine.models.TexturedModel;
 import org.VoxelTest.renderengine.shaders.main.StaticShader;
 import org.VoxelTest.renderengine.world.chunk.Chunk;
-import org.VoxelTest.renderengine.world.cube.Block;
-
+import org.VoxelTest.renderengine.world.cube.blocks.Block;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.*;

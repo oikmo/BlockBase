@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.VoxelTest.renderengine.world.World;
 import org.VoxelTest.renderengine.world.cube.*;
+import org.VoxelTest.renderengine.world.cube.blocks.Block;
 import org.VoxelTest.renderengine.models.CubeModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -67,27 +68,27 @@ public class ChunkMesh {
 		                            if(blockJ == null) { continue; }
 		                            
 		                            //PX
-		            				if(((blockI.position.x + 1) == (blockJ.position.x)) && ((blockI.position.y) == (blockJ.position.y)) && ((blockI.position.z) == (blockJ.position.z))) {
+		            				if(((x + 1) == (neighborX)) && ((y) == (neighborY)) && ((z) == (neighborZ))) {
 		            					px = true;
 		            				}
 		            				//NX
-		            				if(((blockI.position.x - 1) == (blockJ.position.x)) && ((blockI.position.y) == (blockJ.position.y)) && ((blockI.position.z) == (blockJ.position.z))) {
+		            				if(((x - 1) == (neighborX)) && ((y) == (neighborY)) && ((z) == (neighborZ))) {
 		            					nx = true;
 		            				}
 		            				//PY
-		            				if(((blockI.position.x) == (blockJ.position.x)) && ((blockI.position.y + 1) == (blockJ.position.y)) && ((blockI.position.z) == (blockJ.position.z))) {
+		            				if(((x) == (neighborX)) && ((y + 1) == (neighborY)) && ((z) == (neighborZ))) {
 		            					py = true;
 		            				}
 		            				//NY
-		            				if(((blockI.position.x) == (blockJ.position.x)) && ((blockI.position.y - 1) == (blockJ.position.y)) && ((blockI.position.z) == (blockJ.position.z))) {
+		            				if(((x) == (neighborX)) && ((y - 1) == (neighborY)) && ((z) == (neighborZ))) {
 		            					ny = true;
 		            				}
 		            				//PZ
-		            				if(((blockI.position.x) == (blockJ.position.x)) && ((blockI.position.y) == (blockJ.position.y)) && ((blockI.position.z + 1) == (blockJ.position.z))) {
+		            				if(((x) == (neighborX)) && ((y) == (neighborY)) && ((z + 1) == (neighborZ))) {
 		            					pz = true;
 		            				}
 		            				//NZ
-		            				if(((blockI.position.x) == (blockJ.position.x)) && ((blockI.position.y) == (blockJ.position.y)) && ((blockI.position.z - 1) == (blockJ.position.z))) {
+		            				if(((x) == (neighborX)) && ((y) == (neighborY)) && ((z - 1) == (neighborZ))) {
 		            					nz = true;
 		            				}
 		                        }
@@ -97,27 +98,27 @@ public class ChunkMesh {
 		          //Add visible face to the chunkMesh
 					
 		            if (!px) {
-	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.PX_POS, CubeModel.UV_PX, CubeModel.NORMALS);
+	                    addFaceVertices(uniqueVertices, vertices, blockI, x, y, z, CubeModel.PX_POS, CubeModel.UV_PX, CubeModel.NORMALS);
 	                }
 
 	                if (!nx) {
-	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.NX_POS, CubeModel.UV_NX, CubeModel.NORMALS);
+	                    addFaceVertices(uniqueVertices, vertices, blockI, x, y, z, CubeModel.NX_POS, CubeModel.UV_NX, CubeModel.NORMALS);
 	                } 
 
 	                if (!py) {
-	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.PY_POS, CubeModel.UV_PY, CubeModel.NORMALS);
+	                    addFaceVertices(uniqueVertices, vertices, blockI, x, y, z, CubeModel.PY_POS, CubeModel.UV_PY, CubeModel.NORMALS);
 	                }
 
 	                if (!ny) {
-	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.NY_POS, CubeModel.UV_NY, CubeModel.NORMALS);
+	                    addFaceVertices(uniqueVertices, vertices, blockI, x, y, z, CubeModel.NY_POS, CubeModel.UV_NY, CubeModel.NORMALS);
 	                }
 
 	                if (!pz) {
-	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.PZ_POS, CubeModel.UV_PZ, CubeModel.NORMALS);
+	                    addFaceVertices(uniqueVertices, vertices, blockI, x, y, z, CubeModel.PZ_POS, CubeModel.UV_PZ, CubeModel.NORMALS);
 	                }
 
 	                if (!nz) {
-	                    addFaceVertices(uniqueVertices, vertices, blockI, CubeModel.NZ_POS, CubeModel.UV_NZ, CubeModel.NORMALS);
+	                    addFaceVertices(uniqueVertices, vertices, blockI, x, y, z, CubeModel.NZ_POS, CubeModel.UV_NZ, CubeModel.NORMALS);
 	                }
 		        }	
 		        
@@ -127,12 +128,12 @@ public class ChunkMesh {
 		dirty = true;
 	}
 	
-	private void addFaceVertices(HashMap<Vector3f, Vertex> uniqueVertices, List<Vertex> vertices, Block block, Vector3f[] positions, Vector2f[] uvs, Vector3f[] normals) {
+	private void addFaceVertices(HashMap<Vector3f, Vertex> uniqueVertices, List<Vertex> vertices, Block block, int x, int y, int z, Vector3f[] positions, Vector2f[] uvs, Vector3f[] normals) {
 	    int type = block.getType();
 	    int startIndex = type * 6;
 
 	    for (int k = 0; k < 6; k++) {
-	        Vector3f position = new Vector3f(positions[k].x + block.position.x, positions[k].y + block.position.y, positions[k].z + block.position.z);
+	        Vector3f position = new Vector3f(positions[k].x + x, positions[k].y + y, positions[k].z + z);
 	        Vertex vertex = uniqueVertices.get(position);
 
 	        if (vertex == null) {

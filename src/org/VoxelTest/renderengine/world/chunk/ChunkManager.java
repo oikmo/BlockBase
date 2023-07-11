@@ -1,13 +1,9 @@
 package org.VoxelTest.renderengine.world.chunk;
 
-import org.VoxelTest.entities.Entity;
-import org.VoxelTest.main.VoxelTest;
 import org.VoxelTest.renderengine.Loader;
-import org.VoxelTest.renderengine.models.RawModel;
-import org.VoxelTest.renderengine.models.TexturedModel;
 import org.VoxelTest.renderengine.textures.ModelTexture;
 import org.VoxelTest.renderengine.world.World;
-import org.VoxelTest.renderengine.world.cube.Block;
+import org.VoxelTest.renderengine.world.cube.blocks.Block;
 import org.lwjgl.util.vector.Vector3f;
 
 public class ChunkManager {
@@ -21,13 +17,9 @@ public class ChunkManager {
 		
 		Block block = null;
 		
-		//System.out.println("(" + localX + " " + localY + " " + localZ + ") (" + (int)globalOrigin.x + " " + (int)globalOrigin.y + " " + (int)globalOrigin.z + ")");
-		
-		
-		
 		if (isWithinChunk(localX, localY, localZ)) {
 			block = chunk.blocks[localX][localY][localZ];
-			chunkMesh.chunk = chunk;
+			//chunkMesh.chunk = chunk;
 		}
 		return block;
 	}
@@ -45,7 +37,6 @@ public class ChunkManager {
 		int localZ = (int) Math.floorMod((int) (globalOrigin.z + chunkMesh.chunk.origin.z), Chunk.CHUNK_SIZE);
 		
 		if (isWithinChunk(localX, localY, localZ)) {
-			//System.out.println("(" + localX + " " + localY + " " + localZ + ") (" + (int)globalOrigin.x + " " + (int)globalOrigin.y + " " + (int)globalOrigin.z + ") (" + chunkMesh.chunk.origin.x + " " + chunkMesh.chunk.origin.z + ")");
 			if(chunkMesh.chunk.blocks[localX][localY][localZ] == null) {
 				chunkMesh.chunk.blocks[localX][localY][localZ] = block;
 				System.out.println("am i created? (" + localX + " " + localY + " " + localZ + ") (" + (int)chunkMesh.chunk.origin.x + " " + (int) chunkMesh.chunk.origin.y +  " "+(int) chunkMesh.chunk.origin.z +  ")");

@@ -2,14 +2,14 @@ package org.VoxelTest.renderengine.world.chunk;
 
 import org.VoxelTest.main.VoxelTest;
 import org.VoxelTest.renderengine.world.World;
-import org.VoxelTest.renderengine.world.cube.Block;
+import org.VoxelTest.renderengine.world.cube.blocks.Block;
 import org.VoxelTest.toolbox.PerlinNoiseGenerator;
 //import org.VoxelTest.toolbox.datastructures.Fast3DArray;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Chunk {
 
-	public static final int CHUNK_SIZE = 15;
+	public static final int CHUNK_SIZE = 16;
 	
 	boolean isYes = false;
 	
@@ -71,7 +71,7 @@ public class Chunk {
 	                	if(isYes) {
 	                		//System.out.println(x + " " + y + " " + z);
 	                	}	                    
-	                	blocks[x][y][z] = new Block(new Vector3f(x, y, z), calculateBlockType(y));
+	                	blocks[x][y][z] = calculateBlockType(y);
 	                } else {
 	                    // Air block above the height limit
 	                    blocks[x][y][z] = null;
@@ -107,13 +107,13 @@ public class Chunk {
 	    return topLayer;
 	}
 	
-	private Block.Type calculateBlockType(int height) {
+	private Block calculateBlockType(int height) {
 	    if (height >= 60) {
-	        return Block.Type.DIRT;
+	        return Block.dirt;
 	    } else if (height >= 40) {
-	        return Block.Type.DIRT;
+	        return Block.dirt;
 	    } else {
-	        return Block.Type.STONE;
+	        return Block.stone;
 	    }
 	}
 	
